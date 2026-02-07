@@ -1,12 +1,10 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { updateUserProfile } from './auth'
+import { getUserProfile, updateUserProfile } from './auth'
+import { addPetals, PETAL_REWARDS } from './petals'
 
 /**
  * Get or create challenge data for a cycle.
- * @param {string} uid
- * @param {string} cycleId - e.g. cycle start date YYYY-MM-DD
- * @param {number} target - cushion target amount
  */
 export async function getOrCreateChallenges(uid, cycleId, target = 50) {
   const ref = doc(db, 'users', uid, 'challenges', cycleId)
@@ -19,23 +17,23 @@ export async function getOrCreateChallenges(uid, cycleId, target = 50) {
 }
 
 /**
- * Complete a challenge and add to cushion + points.
+ * Complete a challenge and add to cushion + points + petals.
  */
 export async function completeChallenge(uid, cycleId, entry) {
   const ref = doc(db, 'users', uid, 'challenges', cycleId)
   const snap = await getDoc(ref)
   const data = snap.exists() ? snap.data() : { entries: [], totalSaved: 0, target: 50 }
-  const entries = [...(data.entries || []), { ...entry, date: new Date().toISOString().slice(0, 10), completed: true }]
+  const date = new Date().toISOString().slice(0, 10)
+  const newEntry = { ...entry, date, completed: true }
+  const entries = [...(data.entries || []), newEntry]
   const totalSaved = (data.totalSaved || 0) + (entry.savedAmount || 0)
   await setDoc(ref, { ...data, entries, totalSaved, cycleStart: cycleId })
 
-  // Add points (1 point per $1 saved) to user profile
-  const userRef = doc(db, 'users', uid)
-  const userSnap = await getDoc(userRef)
-  const userData = userSnap.exists() ? userSnap.data() : {}
-  const pointsToAdd = Math.round(entry.savedAmount || 0)
-  const newPoints = (userData.points ?? 0) + pointsToAdd
-  await updateUserProfile(uid, { points: newPoints })
+  const pointsEarned = entry.savedAmount || 0
+  const profile = await getUserProfile(uid)
+  const currentPoints = profile?.points ?? 0
+  await updateUserProfile(uid, { points: currentPoints + pointsEarned })
+  await addPetals(uid, PETAL_REWARDS.challenge_completed, 'challenge_completed')
 
-  return { entries, totalSaved, pointsEarned: pointsToAdd }
+  return { entries, totalSaved, pointsEarned }
 }

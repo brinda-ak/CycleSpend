@@ -3,8 +3,8 @@ import { Check } from 'lucide-react'
 import { getCurrentPhase, PHASES } from '../utils/cycleUtils'
 import { getOrCreateChallenges, completeChallenge } from '../lib/challenges'
 import { getCurrentUser } from '../lib/auth'
-import { CHALLENGE_TEMPLATES } from '../data/challengeTemplates'
-import CushionJar from '../components/CushionJar'
+import { getTodayChallenge } from '../data/challengeTemplates'
+import CushionCard from '../components/CushionCard'
 import RewardModal from '../components/RewardModal'
 
 export default function Challenges({ profile, onProfileRefresh }) {
@@ -31,8 +31,7 @@ export default function Challenges({ profile, onProfileRefresh }) {
       const today = new Date().toISOString().slice(0, 10)
       const doneToday = data.entries?.some((e) => e.date === today)
       if (!doneToday && isHighWillpower) {
-        const idx = Math.floor(Math.random() * CHALLENGE_TEMPLATES.length)
-        setTodayChallenge(CHALLENGE_TEMPLATES[idx])
+        setTodayChallenge(getTodayChallenge())
       }
       setLoading(false)
     })
@@ -68,20 +67,23 @@ export default function Challenges({ profile, onProfileRefresh }) {
         <p className="font-sans text-espresso/80 text-sm mt-1">Save during strong phases, spend freely during luteal</p>
       </div>
 
-      <div className="px-5 py-6 bg-warm-bg space-y-6">
-        {/* Savings jar */}
-        <div className="rounded-2xl p-6 bg-tan shadow-card text-center">
-          {loading ? (
-            <div className="text-espresso/70 font-sans">Loading…</div>
-          ) : (
-            <CushionJar saved={totalSaved} target={target} justCompleted={justCompleted} />
-          )}
-          {justCompleted && lastCompletedAmount > 0 && (
-            <p className="text-cranberry font-sans text-sm font-semibold mt-2 animate-pulse">
-              +${lastCompletedAmount} saved · +{lastPointsEarned} points earned!
-            </p>
-          )}
-        </div>
+      <div className="px-5 py-6 space-y-6">
+        {/* Cycle Cushion card */}
+        {loading ? (
+          <div className="rounded-2xl p-6 bg-tan shadow-card text-center text-espresso/70 font-sans">Loading…</div>
+        ) : (
+          <CushionCard
+            saved={totalSaved}
+            target={target}
+            entries={challengeData?.entries ?? []}
+            justCompleted={justCompleted}
+          />
+        )}
+        {justCompleted && lastCompletedAmount > 0 && (
+          <p className="text-cranberry font-sans text-sm font-semibold animate-pulse -mt-2">
+            +${lastCompletedAmount} saved · +{lastPointsEarned} points earned!
+          </p>
+        )}
 
         {!isHighWillpower ? (
           <div className="rounded-2xl p-5 bg-dark-tan/30 text-espresso/80 font-sans text-sm">
@@ -108,7 +110,7 @@ export default function Challenges({ profile, onProfileRefresh }) {
 
         {/* Challenge history */}
         {challengeData?.entries?.length > 0 && (
-          <div className="rounded-2xl p-5 shadow-card bg-warm-bg">
+          <div id="challenge-history" className="rounded-2xl p-5 shadow-card bg-warm-bg">
             <h3 className="font-display font-bold text-burgundy mb-3">Challenge history</h3>
             <ul className="space-y-3">
               {challengeData.entries.slice(-8).reverse().map((e, i) => (
@@ -127,7 +129,7 @@ export default function Challenges({ profile, onProfileRefresh }) {
         {hitTarget && (
           <div className="rounded-2xl p-6 bg-burgundy text-tan">
             <h3 className="font-display font-bold text-lg mb-2">Cycle Cushion full!</h3>
-            <p className="font-sans text-sm opacity-90 mb-4">Your cushion covered your luteal overspend. You earned {totalSaved} points — redeem them for coupons & promotions!</p>
+            <p className="font-sans text-sm opacity-90 mb-4">Your cushion covered your luteal overspend. You earned petals — grow your Garden!</p>
             <button
               onClick={() => { setRewardType('target'); setShowReward(true); }}
               className="w-full py-3 rounded-xl bg-tan text-burgundy font-sans font-semibold"
@@ -142,7 +144,7 @@ export default function Challenges({ profile, onProfileRefresh }) {
         <RewardModal
           onClose={() => { setShowReward(false); setJustCompleted(false); }}
           type={rewardType}
-          pointsEarned={rewardType === 'target' ? totalSaved : lastPointsEarned}
+          pointsEarned={rewardType === 'target' ? 15 : 10}
         />
       )}
     </div>

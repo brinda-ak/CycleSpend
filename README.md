@@ -25,7 +25,7 @@ Financial wellness app that maps spending to menstrual cycle phases (research-ba
    - Add Gemini key (optional for Phase 1): `VITE_GEMINI_API_KEY`
 
 3. **Firebase**
-   - Create a project, enable Google Auth and Firestore
+   - Create a project, enable **Email/Password** and **Google Auth** in Authentication → Sign-in method
    - Deploy rules: `firebase deploy --only firestore:rules` (after `firebase init` if needed)
    - Add your Firebase config to `.env`
 
@@ -34,7 +34,9 @@ Financial wellness app that maps spending to menstrual cycle phases (research-ba
    npm run dev
    ```
 
-5. **Seed Nessie (optional, for demo data)**
+5. **Demo account** — On the login page, click "Use demo account" to sign in with pre-filled data. Credentials: `demo@example.com` / `demo123456`. The account is created automatically on first use.
+
+6. **Seed Nessie (optional, for demo data)**
    ```bash
    NESSIE_API_KEY=your_key node scripts/seedTransactions.js
    ```

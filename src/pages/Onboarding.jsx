@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { getCurrentUser, updateUserProfile } from '../lib/auth'
 import { getCurrentPhase, getPhaseColor } from '../utils/cycleUtils'
 import MoonCycle from '../components/illustrations/MoonCycle'
-import BotanicalBackground from '../components/BotanicalBackground'
 
 const DEFAULT_CYCLE_LENGTH = 28
 
@@ -54,7 +53,6 @@ export default function Onboarding({ onComplete }) {
 
   return (
     <div className="relative min-h-screen max-w-[430px] mx-auto overflow-hidden">
-      <BotanicalBackground />
       {/* Step 1 */}
       {step === 1 && (
         <div>
@@ -66,7 +64,7 @@ export default function Onboarding({ onComplete }) {
               <MoonCycle className="w-16 h-16 flex-shrink-0" />
             </div>
           </div>
-          <div className="px-5 py-8 bg-warm-bg space-y-6">
+          <div className="px-5 py-8 space-y-6">
             <label className="block">
               <span className="text-espresso font-medium text-sm block mb-2">When did your last period start?</span>
               <input
@@ -105,6 +103,12 @@ export default function Onboarding({ onComplete }) {
             >
               Next
             </button>
+            <Link
+              to="/login"
+              className="block text-center text-xs text-espresso/60 hover:text-mauve font-sans mt-4"
+            >
+              Already have an account? Sign in
+            </Link>
           </div>
         </div>
       )}
@@ -117,7 +121,7 @@ export default function Onboarding({ onComplete }) {
               Set your monthly budget
             </h1>
           </div>
-          <div className="px-5 py-8 bg-warm-bg space-y-6">
+          <div className="px-5 py-8 space-y-6">
             <label className="block">
               <span className="text-espresso font-medium text-sm block mb-2 text-center">How much do you spend each month?</span>
               <input
@@ -151,7 +155,7 @@ export default function Onboarding({ onComplete }) {
               You&apos;re all set
             </h1>
           </div>
-          <div className="px-5 py-8 bg-warm-bg space-y-6">
+          <div className="px-5 py-8 space-y-6">
             <h2 className="font-display font-bold text-xl text-burgundy text-center">Welcome to CycleSpend</h2>
             {phaseInfo && (
               <div className="flex flex-col items-center gap-2">

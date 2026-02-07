@@ -83,7 +83,7 @@ export default function Budget({ profile }) {
         <BudgetCircle className="w-20 h-20 flex-shrink-0" />
       </div>
 
-      <div className="px-5 py-6 bg-warm-bg space-y-4">
+      <div className="px-5 py-6 space-y-4">
         {/* Stacked bar */}
         <div className="rounded-2xl p-5 bg-tan shadow-card">
           <div className="flex h-4 rounded-full overflow-hidden mb-3">

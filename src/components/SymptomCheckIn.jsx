@@ -1,39 +1,34 @@
 import { useState, useEffect } from 'react'
+import { Frown, Meh, Smile, Heart, BatteryLow, Moon, Zap, Flame } from 'lucide-react'
 import { logSymptom, getSymptom } from '../lib/symptoms'
 import { getCurrentUser } from '../lib/auth'
 
 const MOOD_OPTIONS = [
-  { value: 1, emoji: '😔' },
-  { value: 2, emoji: '😐' },
-  { value: 3, emoji: '😊' },
-  { value: 4, emoji: '🤩' },
+  { value: 1, icon: Frown, label: 'Low' },
+  { value: 2, icon: Meh, label: 'Okay' },
+  { value: 3, icon: Smile, label: 'Good' },
+  { value: 4, icon: Heart, label: 'Great' },
 ]
 const ENERGY_OPTIONS = [
-  { value: 1, emoji: '🪫' },
-  { value: 2, emoji: '💤' },
-  { value: 3, emoji: '⚡' },
-  { value: 4, emoji: '🔥' },
+  { value: 1, icon: BatteryLow, label: 'Low' },
+  { value: 2, icon: Moon, label: 'Tired' },
+  { value: 3, icon: Zap, label: 'Okay' },
+  { value: 4, icon: Flame, label: 'High' },
 ]
-const CRAVING_OPTIONS = [
-  { value: 1, emoji: '🌱' },
-  { value: 2, emoji: '🍽️' },
-  { value: 3, emoji: '🍕' },
-  { value: 4, emoji: '🤤' },
-]
-
-function EmojiRow({ options, value, onChange }) {
+function IconRow({ options, value, onChange }) {
   return (
     <div className="flex gap-2">
-      {options.map(({ value: v, emoji }) => (
+      {options.map(({ value: v, icon: Icon, label }) => (
         <button
           key={v}
           type="button"
           onClick={() => onChange(v)}
-          className={`w-11 h-11 flex items-center justify-center text-2xl rounded-full transition-all duration-200 touch-manipulation ${
-            value === v ? 'scale-110 bg-tan' : 'opacity-40 hover:opacity-70'
+          title={label}
+          className={`w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 touch-manipulation ${
+            value === v ? 'scale-110 bg-tan text-burgundy' : 'opacity-40 hover:opacity-70 text-espresso'
           }`}
         >
-          {emoji}
+          <Icon size={22} strokeWidth={2} />
         </button>
       ))}
     </div>
@@ -43,7 +38,6 @@ function EmojiRow({ options, value, onChange }) {
 export default function SymptomCheckIn({ profile, onComplete }) {
   const [mood, setMood] = useState(null)
   const [energy, setEnergy] = useState(null)
-  const [craving, setCraving] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
@@ -57,7 +51,6 @@ export default function SymptomCheckIn({ profile, onComplete }) {
       if (data) {
         setMood(data.mood)
         setEnergy(data.energy)
-        setCraving(data.craving)
         setDone(true)
       }
       setLoading(false)
@@ -65,10 +58,10 @@ export default function SymptomCheckIn({ profile, onComplete }) {
   }, [uid])
 
   const handleSave = async () => {
-    if (!uid || mood == null || energy == null || craving == null) return
+    if (!uid || mood == null || energy == null) return
     setSaving(true)
     try {
-      await logSymptom(uid, today, { mood, energy, craving }, profile.lastPeriodStart, profile.cycleLength || 28)
+      await logSymptom(uid, today, { mood, energy }, profile.lastPeriodStart, profile.cycleLength || 28)
       setDone(true)
       onComplete?.()
     } finally {
@@ -76,7 +69,7 @@ export default function SymptomCheckIn({ profile, onComplete }) {
     }
   }
 
-  const canSave = mood != null && energy != null && craving != null
+  const canSave = mood != null && energy != null
 
   if (loading) return null
   if (done) {
@@ -93,15 +86,11 @@ export default function SymptomCheckIn({ profile, onComplete }) {
       <div className="space-y-5">
         <div>
           <span className="text-xs text-espresso/80 block mb-2 font-sans">Mood</span>
-          <EmojiRow options={MOOD_OPTIONS} value={mood} onChange={setMood} />
+          <IconRow options={MOOD_OPTIONS} value={mood} onChange={setMood} />
         </div>
         <div>
           <span className="text-xs text-espresso/80 block mb-2 font-sans">Energy</span>
-          <EmojiRow options={ENERGY_OPTIONS} value={energy} onChange={setEnergy} />
-        </div>
-        <div>
-          <span className="text-xs text-espresso/80 block mb-2 font-sans">Cravings</span>
-          <EmojiRow options={CRAVING_OPTIONS} value={craving} onChange={setCraving} />
+          <IconRow options={ENERGY_OPTIONS} value={energy} onChange={setEnergy} />
         </div>
       </div>
       <button

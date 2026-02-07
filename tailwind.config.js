@@ -18,6 +18,7 @@ export default {
         espresso: '#2C1A1F',
         'dark-mode': '#1E1015',
         'rewards-green': '#6B7F5E',
+        fern: '#6B7F5E',
       },
       fontFamily: {
         sans: ['Nunito', 'system-ui', 'sans-serif'],

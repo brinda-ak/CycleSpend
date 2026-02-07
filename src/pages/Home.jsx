@@ -8,12 +8,11 @@ import { getCurrentUser } from '../lib/auth'
 import { spendToColor } from '../utils/colorUtils'
 import SymptomCheckIn from '../components/SymptomCheckIn'
 import OrganicLines from '../components/illustrations/OrganicLines'
-import JarIcon from '../components/illustrations/JarIcon'
-import { CHALLENGE_TEMPLATES } from '../data/challengeTemplates'
+import { getTodayChallenge } from '../data/challengeTemplates'
 import { completeChallenge } from '../lib/challenges'
 
-function ProgressRing({ progress, color, size = 56 }) {
-  const stroke = 6
+function ProgressRing({ progress, color, size = 56, strokeWidth = 6 }) {
+  const stroke = strokeWidth
   const r = (size - stroke) / 2
   const circ = 2 * Math.PI * r
   const offset = circ - (progress / 100) * circ
@@ -79,8 +78,14 @@ export default function Home({ profile }) {
     getOrCreateChallenges(uid, profile.lastPeriodStart).then((d) => {
       setCushionSaved(d.totalSaved || 0)
       setCushionTarget(d.target || 50)
+      const doneToday = d.entries?.some((e) => e.date === today)
+      if (!doneToday && isHighWillpower) {
+        setTodayChallenge(getTodayChallenge())
+      } else {
+        setTodayChallenge(null)
+      }
     })
-  }, [profile?.lastPeriodStart])
+  }, [profile?.lastPeriodStart, isHighWillpower, today])
 
   useEffect(() => {
     const uid = getCurrentUser()?.uid
@@ -88,14 +93,9 @@ export default function Home({ profile }) {
     syncNessieToFirestore(uid, profile.nessieAccountId, profile.lastPeriodStart, profile.cycleLength || 28).catch(() => {})
   }, [profile?.nessieAccountId, profile?.lastPeriodStart])
 
-  useEffect(() => {
-    if (isHighWillpower) {
-      const idx = Math.floor(Math.random() * CHALLENGE_TEMPLATES.length)
-      setTodayChallenge(CHALLENGE_TEMPLATES[idx])
-    }
-  }, [isHighWillpower])
 
   const handleCompleteChallenge = async () => {
+    const uid = getCurrentUser()?.uid
     if (!uid || !todayChallenge || !profile?.lastPeriodStart) return
     await completeChallenge(uid, profile.lastPeriodStart, { description: todayChallenge.description, savedAmount: todayChallenge.amount })
     const updated = await getOrCreateChallenges(uid, profile.lastPeriodStart)
@@ -133,10 +133,12 @@ export default function Home({ profile }) {
           {phaseInfo && <span className="text-xs text-espresso/70 font-sans capitalize">{phaseInfo.phase}</span>}
         </div>
         <div className="rounded-2xl p-4 bg-tan shadow-card flex flex-col items-center">
-          <JarIcon fillPct={(cushionSaved / cushionTarget) * 100} className="w-12 h-14" />
-          <span className="font-display font-bold text-burgundy mt-1">${cushionSaved}</span>
-          <span className="text-xs text-espresso/80 font-sans">of ${cushionTarget}</span>
-          <span className="text-xs text-espresso/70 font-sans">Cycle Cushion</span>
+          <div className="relative w-12 h-12 flex items-center justify-center">
+            <ProgressRing progress={(cushionSaved / cushionTarget) * 100} color="#6B7F5E" size={48} strokeWidth={4} />
+            <span className="absolute font-display font-bold text-lg text-fern">${cushionSaved}</span>
+          </div>
+          <span className="text-xs text-dusty-rose font-sans mt-1">of ${cushionTarget}</span>
+          <span className="text-xs text-espresso font-sans">Cycle Cushion</span>
         </div>
         <div className="rounded-2xl p-4 bg-tan shadow-card flex flex-col items-center">
           <span className="font-display font-bold text-2xl" style={{ color: phaseColor }}>{phaseInfo?.day || '—'}</span>

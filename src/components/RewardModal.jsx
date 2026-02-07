@@ -1,4 +1,5 @@
-import { X, Gift } from 'lucide-react'
+import { Gift } from 'lucide-react'
+import PetalLeafIcon from './icons/PetalLeafIcon'
 
 const PROMO_CODES = [
   { code: 'CYCLESAVE15', discount: '15% off', partner: 'Thinx' },
@@ -34,7 +35,10 @@ export default function RewardModal({ onClose, type = 'challenge', pointsEarned 
               : "Here's a little thank-you for completing today's challenge."}
           </p>
           {pointsEarned > 0 && (
-            <p className="font-sans text-espresso/90 text-sm font-semibold mb-4">+{pointsEarned} points earned — use them for more coupons!</p>
+            <p className="font-sans text-espresso/90 text-sm font-semibold mb-4 flex items-center justify-center gap-1">
+              <PetalLeafIcon size={14} className="text-fern" />
+              +{pointsEarned} petals earned
+            </p>
           )}
           <div className="rounded-xl bg-warm-bg border-2 border-dashed border-mauve/50 p-4 mb-4">
             <p className="font-sans text-xs text-espresso/70 mb-1">Your reward</p>

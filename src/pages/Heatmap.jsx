@@ -136,12 +136,17 @@ export default function Heatmap({ profile }) {
         </div>
       </div>
 
-      <div className="px-5 py-6 bg-warm-bg">
+      <div className="px-5 py-6">
         {loading ? (
           <div className="text-espresso/70 font-sans">Loading…</div>
         ) : (
-          <div className="rounded-2xl p-5 bg-tan/60 shadow-card border border-dark-tan/30">
-            <div className="grid grid-cols-7 gap-2 mb-2">
+          <div className="rounded-2xl p-5 bg-tan/60 shadow-card border border-dark-tan/30 relative">
+            {/* Calendar hooks */}
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 flex gap-8">
+              <div className="w-4 h-4 rounded-full border-2 border-espresso/40 bg-tan shadow-sm" />
+              <div className="w-4 h-4 rounded-full border-2 border-espresso/40 bg-tan shadow-sm" />
+            </div>
+            <div className="grid grid-cols-7 gap-2 mb-2 mt-1">
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => (
                 <div key={d} className="text-center text-xs text-dusty-rose font-sans font-semibold py-1">{d}</div>
               ))}

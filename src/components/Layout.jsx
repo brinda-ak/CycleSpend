@@ -1,9 +1,8 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { getCurrentPhase, getPhaseColor } from '../utils/cycleUtils'
-import { Home, Calendar, Wallet, Target, BarChart2 } from 'lucide-react'
+import { Home, Calendar, Wallet, Target, BarChart2, Flower2 } from 'lucide-react'
 import ProfileMenu from './ProfileMenu'
-import BotanicalBackground from './BotanicalBackground'
-import LeafIcon from './LeafIcon'
+import PetalLeafIcon from './icons/PetalLeafIcon'
 
 const navItems = [
   { path: '/', label: 'Home', Icon: Home },
@@ -13,25 +12,31 @@ const navItems = [
   { path: '/report', label: 'Report', Icon: BarChart2 },
 ]
 
-export default function Layout({ profile }) {
+export default function Layout({ profile, onProfileRefresh }) {
   const location = useLocation()
   const phaseInfo = profile?.lastPeriodStart
     ? getCurrentPhase(profile.lastPeriodStart, profile.cycleLength || 28)
     : null
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-warm-bg flex flex-col max-w-[430px] mx-auto relative overflow-hidden">
-      <BotanicalBackground />
+    <div className="min-h-screen min-h-[100dvh] flex flex-col max-w-[430px] mx-auto relative overflow-hidden">
       <header className="relative z-20 bg-burgundy text-tan px-5 py-3 flex items-center justify-between gap-2 shadow-card pt-[max(0.75rem,env(safe-area-inset-top))]">
         <span className="font-display font-bold text-lg">CycleSpend</span>
         <div className="flex items-center gap-2">
           <Link
             to="/rewards"
             className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-burgundy/80 transition-colors"
-            title="Your points & rewards"
+            title="Your Garden & Petals"
           >
-            <LeafIcon size={18} className="text-rewards-green" />
-            <span className="text-sm font-sans font-semibold text-tan">{(profile?.points ?? 0)}</span>
+            <PetalLeafIcon size={12} className="text-fern" />
+            <span className="text-sm font-sans font-semibold text-tan">{(profile?.petals ?? profile?.points ?? 0)}</span>
+          </Link>
+          <Link
+            to="/rewards"
+            className="p-2 rounded-lg hover:bg-burgundy/80 transition-colors text-dusty-rose"
+            title="Your Garden"
+          >
+            <Flower2 size={20} />
           </Link>
           {phaseInfo && (
             <span
@@ -41,7 +46,7 @@ export default function Layout({ profile }) {
               {phaseInfo.phaseLabel} · Day {phaseInfo.day}
             </span>
           )}
-          <ProfileMenu profile={profile} />
+          <ProfileMenu profile={profile} onProfileRefresh={onProfileRefresh} />
         </div>
       </header>
 

@@ -1,11 +1,55 @@
 import {
   signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { auth, db, googleProvider } from '../config/firebase'
 import { DEFAULT_PHASE_ALLOCATIONS } from '../utils/cycleUtils'
+
+/**
+ * Sign up with email and password. Creates user profile in Firestore.
+ */
+export async function signUpWithEmail(email, password) {
+  const result = await createUserWithEmailAndPassword(auth, email, password)
+  const user = result.user
+  const userRef = doc(db, 'users', user.uid)
+  await setDoc(userRef, getDefaultUserProfile('', user.email || ''))
+  return user
+}
+
+/** Demo account credentials — sign in to load app with pre-filled data. */
+export const DEMO_EMAIL = 'demo@example.com'
+export const DEMO_PASSWORD = 'demo123456'
+
+/**
+ * Sign in as demo user (email/password). Creates account on first use; always seeds prefilled data.
+ * @param {Function} seedDemoDataFn - Async function(uid) to seed Firestore
+ */
+export async function signInAsDemoUser(seedDemoDataFn) {
+  let user
+  try {
+    user = (await signInWithEmail(DEMO_EMAIL, DEMO_PASSWORD))
+  } catch (err) {
+    if (err.code === 'auth/user-not-found') {
+      user = await signUpWithEmail(DEMO_EMAIL, DEMO_PASSWORD)
+    } else {
+      throw err
+    }
+  }
+  await seedDemoDataFn(user.uid)
+  return user
+}
+
+/**
+ * Sign in with email and password.
+ */
+export async function signInWithEmail(email, password) {
+  const result = await signInWithEmailAndPassword(auth, email, password)
+  return result.user
+}
 
 /**
  * Sign in with Google. Creates or updates user profile in Firestore.
@@ -23,8 +67,9 @@ export async function signInWithGoogle() {
 
 /**
  * Default user profile for new signups (onboarding can overwrite).
+ * Exported for seedDemoData.
  */
-function getDefaultUserProfile(name, email) {
+export function getDefaultUserProfile(name, email) {
   const cycleLength = 28
   const lastPeriodStart = getDefaultLastPeriodStart()
   return {
@@ -35,6 +80,7 @@ function getDefaultUserProfile(name, email) {
     monthlyBudget: null,
     phaseAllocations: { ...DEFAULT_PHASE_ALLOCATIONS },
     points: 0,
+    petals: 0,
     nessieCustomerId: null,
     nessieAccountId: null,
     createdAt: new Date().toISOString(),

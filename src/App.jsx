@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { onAuth, getCurrentUser, getUserProfile } from './lib/auth'
+import FloralBackground from './components/FloralBackground'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Onboarding from './pages/Onboarding'
@@ -9,12 +10,12 @@ import Heatmap from './pages/Heatmap'
 import Budget from './pages/Budget'
 import Challenges from './pages/Challenges'
 import Report from './pages/Report'
-import Rewards from './pages/Rewards'
+import Garden from './pages/Garden'
 
 function RequireAuth({ children, profile, loading }) {
   if (loading) {
     return (
-      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-espresso font-sans">Loading…</div>
       </div>
     )
@@ -54,7 +55,9 @@ export default function App() {
 
   return (
     <>
-      <Routes>
+      <FloralBackground />
+      <div className="relative z-10 max-w-[430px] mx-auto">
+        <Routes>
       <Route path="/login" element={<Login />} />
       <Route
         path="/onboarding"
@@ -70,7 +73,7 @@ export default function App() {
         path="/"
         element={
           <RequireAuth profile={profile} loading={loading}>
-            <Layout profile={profile} />
+            <Layout profile={profile} onProfileRefresh={refreshProfile} />
           </RequireAuth>
         }
       >
@@ -79,10 +82,11 @@ export default function App() {
         <Route path="budget" element={<Budget profile={profile} />} />
         <Route path="challenges" element={<Challenges profile={profile} onProfileRefresh={refreshProfile} />} />
         <Route path="report" element={<Report profile={profile} />} />
-        <Route path="rewards" element={<Rewards profile={profile} />} />
+        <Route path="rewards" element={<Garden profile={profile} />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        </Routes>
+      </div>
     </>
   )
 }

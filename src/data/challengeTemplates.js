@@ -2,6 +2,13 @@
  * Challenge templates for Cycle Savings. Each has description, estimated savings, category.
  */
 
+/** Get the same challenge for today across Dashboard and Challenges page (deterministic by day-of-year). */
+export function getTodayChallenge() {
+  const start = new Date(new Date().getFullYear(), 0, 0)
+  const dayOfYear = Math.floor((Date.now() - start.getTime()) / 86400000)
+  return CHALLENGE_TEMPLATES[dayOfYear % CHALLENGE_TEMPLATES.length]
+}
+
 export const CHALLENGE_TEMPLATES = [
   { id: '1', description: 'Skip the $6 coffee today — bank it for your luteal cushion', amount: 6, category: 'coffee' },
   { id: '2', description: 'Cook tonight instead of DoorDash — save $14 for your luteal cushion', amount: 14, category: 'food_delivery' },

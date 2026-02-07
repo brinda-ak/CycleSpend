@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { User, LogOut } from 'lucide-react'
 import { getCurrentUser, signOut } from '../lib/auth'
 
-export default function ProfileMenu({ profile }) {
+export default function ProfileMenu({ profile, onProfileRefresh }) {
   const [open, setOpen] = useState(false)
   const menuRef = useRef(null)
 
@@ -65,7 +65,7 @@ export default function ProfileMenu({ profile }) {
               <p className="text-espresso/80">Budget: ${profile.monthlyBudget}/mo</p>
             )}
           </div>
-          <div className="px-2 pt-2 border-t border-dark-tan/30">
+          <div className="px-2 pt-2 border-t border-dark-tan/30 space-y-1">
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-cranberry hover:bg-cranberry/10 font-sans font-medium"

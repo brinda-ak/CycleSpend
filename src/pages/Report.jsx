@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BarChart2 } from 'lucide-react'
 import { getPhaseColor, PHASES } from '../utils/cycleUtils'
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { generateCycleSummary } from '../lib/gemini'
 
 const phaseOrder = [PHASES.MENSTRUAL, PHASES.FOLLICULAR, PHASES.OVULATORY, PHASES.LUTEAL]
@@ -41,7 +41,7 @@ export default function Report({ profile }) {
         <span className="inline-block mt-2 px-3 py-1 rounded-full bg-tan/20 text-tan text-xs font-sans">Cycle 1</span>
       </div>
 
-      <div className="px-5 py-6 bg-warm-bg space-y-6">
+      <div className="px-5 py-6 space-y-6">
         {/* Phase spending breakdown */}
         <div className="space-y-3">
           <h2 className="font-display font-bold text-burgundy">Phase spending</h2>
@@ -65,6 +65,7 @@ export default function Report({ profile }) {
               <BarChart data={categoryData} layout="vertical" margin={{ left: 0, right: 20 }}>
                 <XAxis type="number" tick={{ fontSize: 12 }} stroke="#9E6B73" />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={90} stroke="#9E6B73" />
+                <Tooltip formatter={(val) => [`$${val}`, 'Amount']} contentStyle={{ borderRadius: 12, border: '1px solid #C4A088' }} />
                 <Bar dataKey="value" fill="#8B2942" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
