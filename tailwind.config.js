@@ -17,10 +17,11 @@ export default {
         'warm-bg': '#F0E6DD',
         espresso: '#2C1A1F',
         'dark-mode': '#1E1015',
+        'rewards-green': '#6B7F5E',
       },
       fontFamily: {
         sans: ['Nunito', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'system-ui', 'sans-serif'],
+        display: ['Playfair Display', 'serif'],
       },
       borderRadius: {
         card: '16px',
@@ -28,6 +29,9 @@ export default {
       },
       boxShadow: {
         card: '0 2px 10px rgba(44, 26, 31, 0.10)',
+      },
+      borderRadius: {
+        card: '16px',
       },
     },
   },

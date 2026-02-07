@@ -9,6 +9,7 @@ import Heatmap from './pages/Heatmap'
 import Budget from './pages/Budget'
 import Challenges from './pages/Challenges'
 import Report from './pages/Report'
+import Rewards from './pages/Rewards'
 
 function RequireAuth({ children, profile, loading }) {
   if (loading) {
@@ -52,7 +53,8 @@ export default function App() {
   }
 
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route
         path="/onboarding"
@@ -75,10 +77,12 @@ export default function App() {
         <Route index element={<Home profile={profile} />} />
         <Route path="heatmap" element={<Heatmap profile={profile} />} />
         <Route path="budget" element={<Budget profile={profile} />} />
-        <Route path="challenges" element={<Challenges profile={profile} />} />
+        <Route path="challenges" element={<Challenges profile={profile} onProfileRefresh={refreshProfile} />} />
         <Route path="report" element={<Report profile={profile} />} />
+        <Route path="rewards" element={<Rewards profile={profile} />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   )
 }

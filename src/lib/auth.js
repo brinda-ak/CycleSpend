@@ -34,6 +34,7 @@ function getDefaultUserProfile(name, email) {
     lastPeriodStart,
     monthlyBudget: null,
     phaseAllocations: { ...DEFAULT_PHASE_ALLOCATIONS },
+    points: 0,
     nessieCustomerId: null,
     nessieAccountId: null,
     createdAt: new Date().toISOString(),

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithGoogle } from '../lib/auth'
+import BotanicalBackground from '../components/BotanicalBackground'
 
 export default function Login() {
   const [error, setError] = useState(null)
@@ -21,12 +22,13 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-bg flex flex-col items-center justify-center px-6">
-      <div className="max-w-sm w-full">
+    <div className="relative min-h-screen bg-warm-bg flex flex-col items-center justify-center px-6 overflow-hidden">
+      <BotanicalBackground />
+      <div className="relative z-10 max-w-sm w-full">
         <h1 className="text-burgundy font-display font-bold text-2xl text-center mb-2">
           CycleSpend
         </h1>
-        <p className="text-espresso/80 text-center text-sm mb-8">
+        <p className="text-espresso/80 text-center text-sm mb-8 font-sans">
           Budget with your cycle, not against it.
         </p>
         {error && (
@@ -38,7 +40,7 @@ export default function Login() {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="w-full py-3 px-4 rounded-card bg-cranberry text-tan font-semibold hover:bg-cranberry/90 disabled:opacity-60 transition"
+          className="w-full py-3 px-4 rounded-xl bg-cranberry text-white font-sans font-semibold hover:bg-cranberry/90 disabled:opacity-60 transition"
         >
           {loading ? 'Signing in…' : 'Continue with Google'}
         </button>

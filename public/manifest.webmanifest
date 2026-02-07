@@ -1,0 +1,10 @@
+{
+  "name": "CycleSpend",
+  "short_name": "CycleSpend",
+  "description": "Budget with your cycle, not against it",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F0E6DD",
+  "theme_color": "#5B1A2E",
+  "orientation": "portrait"
+}

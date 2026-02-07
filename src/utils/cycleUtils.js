@@ -88,6 +88,19 @@ export function getCurrentPhase(cycleStartDate, cycleLength = 28) {
 }
 
 /**
+ * Full display label for phase (unabbreviated, capitalized).
+ */
+export function getPhaseLabel(phase) {
+  const labels = {
+    [PHASES.MENSTRUAL]: 'Menstrual',
+    [PHASES.FOLLICULAR]: 'Follicular',
+    [PHASES.OVULATORY]: 'Ovulatory',
+    [PHASES.LUTEAL]: 'Luteal',
+  }
+  return labels[phase] || (phase ? phase.charAt(0).toUpperCase() + phase.slice(1) : '')
+}
+
+/**
  * Map phase name to hex color (for bands, badges, charts).
  */
 export function getPhaseColor(phase) {
@@ -120,6 +133,19 @@ export const DEFAULT_PHASE_ALLOCATIONS = {
 /**
  * Number of days in each phase for default 28-day cycle.
  */
+export function getDaysLeftInPhase(day, phase, cycleLength = 28) {
+  const r = getPhaseRanges(cycleLength)
+  const range = r[phase]
+  if (!range) return 0
+  return Math.max(0, range.end - day + 1)
+}
+
+export function getPhaseDayRange(phase, cycleLength = 28) {
+  const r = getPhaseRanges(cycleLength)
+  const range = r[phase]
+  return range ? { start: range.start, end: range.end } : { start: 1, end: cycleLength }
+}
+
 export function getPhaseDayCounts(cycleLength = 28) {
   const r = getPhaseRanges(cycleLength)
   return {
