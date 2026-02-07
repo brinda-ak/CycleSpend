@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users: own profile only
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Transactions: per-user subcollection
+    match /users/{uid}/transactions/{txnId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Symptom logs: per-user
+    match /users/{uid}/symptoms/{date} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Challenges: per-user per cycle
+    match /users/{uid}/challenges/{cycleId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Reports: per-user per cycle
+    match /users/{uid}/reports/{cycleId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Budgets: per-user per cycle (if stored under users)
+    match /users/{uid}/budgets/{cycleId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-burgundy: #5B1A2E;
+  --color-cranberry: #8B2942;
+  --color-mauve: #7A4B5E;
+  --color-dusty-rose: #9E6B73;
+  --color-terracotta: #B56B4A;
+  --color-tan: #D4B5A0;
+  --color-dark-tan: #C4A088;
+  --color-warm-bg: #F0E6DD;
+  --color-espresso: #2C1A1F;
+}
+
+body {
+  @apply bg-warm-bg text-espresso font-sans antialiased;
+}
