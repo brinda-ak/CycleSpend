@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { getCurrentPhase, getPhaseColor } from '../utils/cycleUtils'
-import { Home, Calendar, Wallet, Target, BarChart2, Flower2 } from 'lucide-react'
+import { Home, Calendar, Wallet, Target, BarChart2 } from 'lucide-react'
 import ProfileMenu from './ProfileMenu'
 import PetalLeafIcon from './icons/PetalLeafIcon'
 
@@ -22,7 +22,7 @@ export default function Layout({ profile, onProfileRefresh }) {
     <div className="min-h-screen min-h-[100dvh] flex flex-col max-w-[430px] mx-auto relative overflow-hidden">
       <header className="relative z-20 bg-burgundy text-tan px-5 py-3 flex items-center justify-between gap-2 shadow-card pt-[max(0.75rem,env(safe-area-inset-top))]">
         <span className="font-display font-bold text-lg">CycleSpend</span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Link
             to="/rewards"
             className="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-burgundy/80 transition-colors"
@@ -30,13 +30,6 @@ export default function Layout({ profile, onProfileRefresh }) {
           >
             <PetalLeafIcon size={12} className="text-fern" />
             <span className="text-sm font-sans font-semibold text-tan">{(profile?.petals ?? profile?.points ?? 0)}</span>
-          </Link>
-          <Link
-            to="/rewards"
-            className="p-2 rounded-lg hover:bg-burgundy/80 transition-colors text-dusty-rose"
-            title="Your Garden"
-          >
-            <Flower2 size={20} />
           </Link>
           {phaseInfo && (
             <span

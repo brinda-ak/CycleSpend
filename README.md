@@ -1,6 +1,31 @@
 # CycleSpend
 
-Financial wellness app that maps spending to menstrual cycle phases (research-backed: Pine & Fletcher, 2011). Budget with your cycle, not against it.
+# The Problem
+A study of 443 women (Pine & Fletcher, Personality and Individual Differences, 2011) found that women in the luteal phase showed significantly less self-control, more impulsive purchasing, and higher rates of buyer's remorse — yet no budgeting app accounts for this. College-age women are at the intersection of limited income, high temptation environments (campus food delivery, online shopping), and the highest frequency of regular menstrual cycles. A Purdue student with a $2,000/semester discretionary budget who overspends by 35% each luteal phase is losing ~$175/semester to a pattern she may not even be aware of.
+
+# The Features
+Features
+1. Cycle-Spend Heatmap
+A calendar-view heatmap where each day is color-coded by spending intensity with cycle phase bands overlaid. One glance reveals the correlation between cycle phase and spending. Tap any day to see transactions and phase context. Color scale interpolates from warm-bg (low spend) through dark-tan (moderate) to cranberry (high spend). Phase bands render at 20% opacity behind the grid.
+2. Phase Budget Allocator
+Splits the user's monthly budget across four cycle phases in unequal proportions based on personal spending history. Research-based defaults: follicular 22%, ovulatory 13%, luteal 40%, menstrual 25%. Users can fine-tune via sliders. Each phase shows a countdown with remaining budget and days left. The budget fits the biology — the user isn't "failing."
+3. Cycle Savings Challenge
+During follicular/ovulatory phases (high willpower), the app issues daily micro-challenges tied to real campus life: "Skip the $6 Starbucks today and bank it for Day 22." Completed challenges build a Cycle Cushion — a budget buffer that gets added to the luteal phase allocation. End-of-cycle receipt shows net impact. Challenges are verified against Nessie transaction data when possible.
+4. Symptom-Spend Correlation Tracker
+A 5-second daily check-in (mood, energy, craving level on a 1–4 scale) that the app correlates with spending using Pearson coefficients. Surfaces insights like "When you log low energy, you spend 2.3x more on food delivery within 4 hours." Correlations feed the monthly report after 14+ days of data.
+5. Monthly Cycle Finance Report
+AI-generated end-of-cycle report powered by Gemini 1.5 Flash. Includes phase spending breakdowns vs. personal averages, category analysis per phase, Cycle Cushion performance, symptom-spend highlights, and a personalized 3–4 sentence narrative with one actionable tip for the next cycle. Tone: encouraging and empowering, never shaming.
+6. Badge Garden & Rewards
+A collectible reward system where users grow a visual flower garden by hitting milestones. 13 unique botanical flower badges across four categories (Cycle, Challenge, Savings, Streak & Special) with rarity tiers from common to legendary. Petals (points) are earned from challenges, symptom logging, streaks, and cycle completions. Challenge completion is verified against Nessie transaction data — if you say you skipped DoorDash, the app checks.
+
+# Tech Stack
+React 18 + Vite + Tailwind CSS
+Firebase (Auth, Firestore, Hosting)
+Google Gemini API (1.5 Flash)
+Nessie API (Capital One)
+Simulated bank accounts and transactions. Realistic demo data. Finance track relevance.
+Recharts
+Custom JavaScript
 
 ## Phase 1 foundation (this repo)
 

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { getCurrentUser, updateUserProfile } from '../lib/auth'
 import { getCurrentPhase, getPhaseColor } from '../utils/cycleUtils'
-import MoonCycle from '../components/illustrations/MoonCycle'
 
 const DEFAULT_CYCLE_LENGTH = 28
 
@@ -57,12 +56,9 @@ export default function Onboarding({ onComplete }) {
       {step === 1 && (
         <div>
           <div className="bg-tan px-5 pt-8 pb-12 rounded-b-2xl">
-            <div className="flex justify-between items-start">
-              <h1 className="font-display font-bold text-2xl text-burgundy">
-                Let&apos;s get to know your cycle
-              </h1>
-              <MoonCycle className="w-16 h-16 flex-shrink-0" />
-            </div>
+            <h1 className="font-display font-bold text-2xl text-burgundy">
+              Let&apos;s get to know your cycle
+            </h1>
           </div>
           <div className="px-5 py-8 space-y-6">
             <label className="block">

@@ -1,12 +1,15 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BarChart2 } from 'lucide-react'
 import { getPhaseColor, PHASES } from '../utils/cycleUtils'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { generateCycleSummary } from '../lib/gemini'
+import { getCurrentUser, updateUserProfile } from '../lib/auth'
 
 const phaseOrder = [PHASES.MENSTRUAL, PHASES.FOLLICULAR, PHASES.OVULATORY, PHASES.LUTEAL]
 
-export default function Report({ profile }) {
+export default function Report({ profile, onProfileRefresh }) {
+  const navigate = useNavigate()
   const [aiSummary, setAiSummary] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -30,6 +33,15 @@ export default function Report({ profile }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleStartNextCycle = async () => {
+    const uid = getCurrentUser()?.uid
+    if (!uid) return
+    const today = new Date().toISOString().slice(0, 10)
+    await updateUserProfile(uid, { lastPeriodStart: today })
+    onProfileRefresh?.()
+    navigate('/')
   }
 
   return (
@@ -100,7 +112,7 @@ export default function Report({ profile }) {
         <div className="rounded-2xl p-5 bg-tan shadow-card">
           <h2 className="font-display font-bold text-burgundy mb-2">Next cycle</h2>
           <p className="font-sans text-espresso text-sm mb-4">Suggested cushion target: $50</p>
-          <button className="w-full py-3 rounded-xl bg-cranberry text-white font-sans font-semibold">
+          <button onClick={handleStartNextCycle} className="w-full py-3 rounded-xl bg-cranberry text-white font-sans font-semibold">
             Start next cycle →
           </button>
         </div>

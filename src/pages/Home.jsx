@@ -7,8 +7,7 @@ import { getOrCreateChallenges } from '../lib/challenges'
 import { getCurrentUser } from '../lib/auth'
 import { spendToColor } from '../utils/colorUtils'
 import SymptomCheckIn from '../components/SymptomCheckIn'
-import OrganicLines from '../components/illustrations/OrganicLines'
-import { getTodayChallenge } from '../data/challengeTemplates'
+import { getPersonalizedChallenge } from '../data/challengeTemplates'
 import { completeChallenge } from '../lib/challenges'
 
 function ProgressRing({ progress, color, size = 56, strokeWidth = 6 }) {
@@ -75,12 +74,15 @@ export default function Home({ profile }) {
   useEffect(() => {
     const uid = getCurrentUser()?.uid
     if (!uid || !profile?.lastPeriodStart) return
-    getOrCreateChallenges(uid, profile.lastPeriodStart).then((d) => {
+    Promise.all([
+      getOrCreateChallenges(uid, profile.lastPeriodStart),
+      getTransactionsFromFirestore(uid),
+    ]).then(([d, transactions]) => {
       setCushionSaved(d.totalSaved || 0)
       setCushionTarget(d.target || 50)
       const doneToday = d.entries?.some((e) => e.date === today)
       if (!doneToday && isHighWillpower) {
-        setTodayChallenge(getTodayChallenge())
+        setTodayChallenge(getPersonalizedChallenge(transactions))
       } else {
         setTodayChallenge(null)
       }
@@ -110,18 +112,15 @@ export default function Home({ profile }) {
   return (
     <div className="px-5 py-4 space-y-4 max-w-[430px] mx-auto">
       {/* Greeting card */}
-      <section className="rounded-2xl p-5 shadow-card bg-tan border-l-4 border-mauve flex gap-4">
-        <div className="flex-1">
-          <h2 className="font-display font-bold text-xl text-burgundy">
-            Hey{profile?.name ? ` ${profile.name.split(' ')[0]}` : ''}!
-          </h2>
-          {phaseInfo && (
-            <p className="text-espresso mt-2 font-sans text-sm">
-              You&apos;re in your <strong>{phaseInfo.phaseLabel}</strong> phase. Your budget has <strong>${remaining.toFixed(0)}</strong> left for <strong>{Math.max(0, daysLeft)}</strong> more days.
-            </p>
-          )}
-        </div>
-        <OrganicLines className="w-14 h-14 flex-shrink-0" />
+      <section className="rounded-2xl p-5 shadow-card bg-tan border-l-4 border-mauve">
+        <h2 className="font-display font-bold text-xl text-burgundy">
+          Hey{profile?.name ? ` ${profile.name.split(' ')[0]}` : ''}!
+        </h2>
+        {phaseInfo && (
+          <p className="text-espresso mt-2 font-sans text-sm">
+            You&apos;re in your <strong>{phaseInfo.phaseLabel}</strong> phase. Your budget has <strong>${remaining.toFixed(0)}</strong> left for <strong>{Math.max(0, daysLeft)}</strong> more days.
+          </p>
+        )}
       </section>
 
       {/* Stats row */}

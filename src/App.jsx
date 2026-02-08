@@ -81,7 +81,7 @@ export default function App() {
         <Route path="heatmap" element={<Heatmap profile={profile} />} />
         <Route path="budget" element={<Budget profile={profile} />} />
         <Route path="challenges" element={<Challenges profile={profile} onProfileRefresh={refreshProfile} />} />
-        <Route path="report" element={<Report profile={profile} />} />
+        <Route path="report" element={<Report profile={profile} onProfileRefresh={refreshProfile} />} />
         <Route path="rewards" element={<Garden profile={profile} />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

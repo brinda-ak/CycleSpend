@@ -3,8 +3,6 @@ import { PHASES, getCurrentPhase, getPhaseColor, getPhaseDayCounts, getPhaseDayR
 import { updateUserProfile } from '../lib/auth'
 import { getCurrentUser } from '../lib/auth'
 import { getTransactionsFromFirestore } from '../lib/nessieSync'
-import BudgetCircle from '../components/illustrations/BudgetCircle'
-
 function ProgressRing({ progress, color, size = 64 }) {
   const stroke = 6
   const r = (size - stroke) / 2
@@ -75,12 +73,9 @@ export default function Budget({ profile }) {
   return (
     <div className="max-w-[430px] mx-auto">
       {/* Hero */}
-      <div className="bg-tan px-5 pt-6 pb-8 rounded-b-2xl flex gap-4 items-center">
-        <div>
-          <h1 className="font-display font-bold text-2xl text-burgundy">Phase Budget</h1>
-          <p className="font-sans text-espresso/80 text-sm mt-1">Your budget, shaped to your cycle</p>
-        </div>
-        <BudgetCircle className="w-20 h-20 flex-shrink-0" />
+      <div className="bg-tan px-5 pt-6 pb-8 rounded-b-2xl">
+        <h1 className="font-display font-bold text-2xl text-burgundy">Phase Budget</h1>
+        <p className="font-sans text-espresso/80 text-sm mt-1">Your budget, shaped to your cycle</p>
       </div>
 
       <div className="px-5 py-6 space-y-4">

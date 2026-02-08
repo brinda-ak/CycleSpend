@@ -3,7 +3,8 @@ import { Check } from 'lucide-react'
 import { getCurrentPhase, PHASES } from '../utils/cycleUtils'
 import { getOrCreateChallenges, completeChallenge } from '../lib/challenges'
 import { getCurrentUser } from '../lib/auth'
-import { getTodayChallenge } from '../data/challengeTemplates'
+import { getPersonalizedChallenge } from '../data/challengeTemplates'
+import { getTransactionsFromFirestore } from '../lib/nessieSync'
 import CushionCard from '../components/CushionCard'
 import RewardModal from '../components/RewardModal'
 
@@ -26,12 +27,15 @@ export default function Challenges({ profile, onProfileRefresh }) {
       setLoading(false)
       return
     }
-    getOrCreateChallenges(uid, profile.lastPeriodStart, 50).then((data) => {
+    Promise.all([
+      getOrCreateChallenges(uid, profile.lastPeriodStart, 50),
+      getTransactionsFromFirestore(uid),
+    ]).then(([data, transactions]) => {
       setChallengeData(data)
       const today = new Date().toISOString().slice(0, 10)
       const doneToday = data.entries?.some((e) => e.date === today)
       if (!doneToday && isHighWillpower) {
-        setTodayChallenge(getTodayChallenge())
+        setTodayChallenge(getPersonalizedChallenge(transactions))
       }
       setLoading(false)
     })

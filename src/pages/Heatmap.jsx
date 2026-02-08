@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react'
 import { getTransactionsFromFirestore } from '../lib/nessieSync'
 import { getCurrentUser } from '../lib/auth'
 import { spendToColor } from '../utils/colorUtils'
 import { getCycleDayAndPhase, getPhaseColor, getPhaseLabel, PHASES } from '../utils/cycleUtils'
+import { generateCalendarInsights } from '../lib/gemini'
 
 function DayDetailModal({ date, spend, transactions, phaseInfo, onClose }) {
   if (!date) return null
@@ -57,6 +58,8 @@ export default function Heatmap({ profile }) {
   const [loading, setLoading] = useState(true)
   const [selectedDay, setSelectedDay] = useState(null)
   const [monthOffset, setMonthOffset] = useState(0)
+  const [aiInsight, setAiInsight] = useState(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   const uid = getCurrentUser()?.uid
   const lastPeriod = profile?.lastPeriodStart || ''
@@ -97,6 +100,29 @@ export default function Heatmap({ profile }) {
   const selectedSpend = selectedDay ? byDate[selectedDay] || 0 : 0
   const selectedTxns = selectedDay ? transactions.filter((t) => t.date?.slice(0, 10) === selectedDay) : []
   const selectedPhase = selectedDay && lastPeriod ? getCycleDayAndPhase(lastPeriod, selectedDay, cycleLength) : null
+
+  const phaseSpends = { menstrual: 0, follicular: 0, ovulatory: 0, luteal: 0 }
+  transactions.forEach((t) => {
+    if (t.phase) phaseSpends[t.phase] = (phaseSpends[t.phase] || 0) + (t.amount || 0)
+  })
+  const phaseInfo = lastPeriod ? getCycleDayAndPhase(lastPeriod, today, cycleLength) : null
+
+  const handleGetInsights = async () => {
+    setAiLoading(true)
+    try {
+      const insight = await generateCalendarInsights({
+        transactions,
+        monthlyBudget: profile?.monthlyBudget,
+        phaseSpends,
+        currentPhase: phaseInfo?.phaseLabel || '',
+      })
+      setAiInsight(insight)
+    } catch (e) {
+      setAiInsight('Could not load insights. ' + (e.message || ''))
+    } finally {
+      setAiLoading(false)
+    }
+  }
 
   const phaseColors = [
     { phase: PHASES.MENSTRUAL, color: '#5B1A2E' },
@@ -198,6 +224,27 @@ export default function Heatmap({ profile }) {
             </div>
           </div>
         )}
+      </div>
+
+      {/* AI Insights bar - under calendar */}
+      <div className="px-5 -mt-2 pb-6">
+        <div className="rounded-2xl p-4 shadow-card bg-gradient-to-r from-cranberry/90 to-burgundy/90 text-tan">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles size={18} className="text-tan/90" />
+            <span className="font-display font-bold text-sm">AI Insights</span>
+          </div>
+          {aiInsight ? (
+            <p className="font-sans text-sm leading-relaxed opacity-95">{aiInsight}</p>
+          ) : (
+            <button
+              onClick={handleGetInsights}
+              disabled={aiLoading}
+              className="w-full py-2.5 rounded-xl bg-tan/20 text-tan font-sans font-semibold text-sm hover:bg-tan/30 disabled:opacity-60 transition-colors"
+            >
+              {aiLoading ? 'Generating…' : 'Get spending & budget insights'}
+            </button>
+          )}
+        </div>
       </div>
 
       {selectedDay && (

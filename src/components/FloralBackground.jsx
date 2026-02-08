@@ -1,16 +1,13 @@
 /**
- * Floral line-art background — appears behind all pages (login, signup, main app).
+ * Warm background — appears behind all pages. Clean gradient; garden is where flower magic happens.
  */
 export default function FloralBackground() {
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-0 bg-[#F5EDE8]"
+      className="fixed inset-0 z-0"
       style={{
-        backgroundImage: 'url(/assets/floral-background.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        background: 'linear-gradient(180deg, #F5EDE8 0%, #EDE4DD 50%, #E5DBD3 100%)',
       }}
     />
   )
