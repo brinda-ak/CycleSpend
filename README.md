@@ -19,6 +19,7 @@ AI-generated end-of-cycle report powered by Gemini 1.5 Flash. Includes phase spe
 A collectible reward system where users grow a visual flower garden by hitting milestones. 13 unique botanical flower badges across four categories (Cycle, Challenge, Savings, Streak & Special) with rarity tiers from common to legendary. Petals (points) are earned from challenges, symptom logging, streaks, and cycle completions. Challenge completion is verified against Nessie transaction data — if you say you skipped DoorDash, the app checks.
 
 # Tech Stack
+Used generative AI, including Claude, Gemini, and Cursor.
 React 18 + Vite + Tailwind CSS
 Firebase (Auth, Firestore, Hosting)
 Google Gemini API (1.5 Flash)
